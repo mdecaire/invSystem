@@ -35,12 +35,26 @@ public class PerfectPantryGUI extends JFrame {
      */
     public PerfectPantryGUI() throws SQLException {
         //JDBC jdbc = new JDBC();
+        //System.out.println("before conn");
         Connection conn = JDBC.getConnection();
         if (conn == null) {
+            //System.out.println("conn is null");
             DBPropertiesDialog dialog = new DBPropertiesDialog(null);
             dialog.run();
+            //Check if input info is correct
+            conn = JDBC.getConnection();
+            if (conn == null) {
+                JOptionPane.showMessageDialog(this, "Could not make connection to DB\nExiting");
+                //System.out.println("dispatching");
+                dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+                setVisible(false);
+                dispose();
+                System.exit(0);
+                //System.out.println("dispatched");
+                return;
+            }
         }
-
+        //System.out.println("after conn");
         invData = new InventoryData();
         shopData=new ShoppingData();
         nutData= new NutritionData();
@@ -483,6 +497,7 @@ public class PerfectPantryGUI extends JFrame {
                 
                 if(shopData.AddItemSL(data)) { //if(true) {
                     populateShoppingTable(data[0]);
+                    selectShopListComboBox.setSelectedItem(data[0]);
                     JOptionPane.showMessageDialog(this, "Item has been added!");
                     dispose();
                 } else {

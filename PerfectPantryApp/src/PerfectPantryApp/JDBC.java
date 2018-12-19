@@ -11,6 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.SQLNonTransientConnectionException;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,9 +49,9 @@ public class JDBC {
             
             // create a connection to the database
             conn = DriverManager.getConnection(url, user, password);
-        } catch (IOException e) {
+        } catch (IOException | SQLNonTransientConnectionException e) {
             conn=null;
-            System.out.println("File not found, creating db.properties");
+            System.out.println("File not found or invalid, writing db.properties");
             //Logger.getLogger(InventoryData.class.getName()).log(Level.SEVERE, null, e);
         }
         return conn;
